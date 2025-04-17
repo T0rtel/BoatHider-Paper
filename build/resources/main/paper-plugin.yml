@@ -1,0 +1,17 @@
+name: BoatHider1-21-4
+version: '1.0-SNAPSHOT'
+main: tortel.boatHider.Main
+api-version: '1.21'
+
+commands:
+  forceinboat:
+    description: forces a player in boat waow.
+
+  hideboats:
+    description: hides boats all around you.
+
+  spawnboat:
+    description: spawns a boat waow.
+
+  toggleplayercollisions:
+    description: toggles player collisions waow.

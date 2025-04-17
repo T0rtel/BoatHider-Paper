@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: tortel.boatHider.Main
+paperweight-mappings-namespace: mojang
+
