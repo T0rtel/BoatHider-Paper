@@ -52,7 +52,7 @@ class Main : JavaPlugin() {
         lamp.register(HidingBoatsCommand())
         lamp.register(ForceInBoatCommand())
         lamp.register(SpawnBoatCommand())
-        lamp.register(TogglePlayerCollisions())
+        lamp.register(TogglePlayerCollisions())//
 //        getCommand("hideboats")?.setExecutor(HidingBoatsCommand())
 //        getCommand("forceinboat")?.setExecutor(ForceInBoatCommand())
 //        getCommand("spawnboat")?.setExecutor(SpawnBoatCommand())
