@@ -45,7 +45,7 @@ class Main : JavaPlugin() {
         // Plugin shutdown logic
     }
 
-    fun registerCommands(){
+    fun registerCommands(){//
         val lamp: Lamp<BukkitCommandActor> = BukkitLamp.builder(instance!! as JavaPlugin)
             .build()
 

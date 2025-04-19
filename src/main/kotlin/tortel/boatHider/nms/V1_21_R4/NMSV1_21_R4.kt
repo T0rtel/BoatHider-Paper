@@ -19,7 +19,7 @@ class NMSV1_21_R4 : INMS {
         val yaw = Location.normalizeYaw(location.yaw)
         boat.setRot(yaw, 0.0f)
         boat.setPos(location.x, location.y, location.z)
-
+//
 
         level.addFreshEntity(boat)
         //boat.setBoatType(EntityBoat.EnumBoatType.a)

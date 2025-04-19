@@ -207,7 +207,7 @@ class BoatListeners(private val plugin: Plugin) : Listener {
             }
         }.runTaskLater(plugin, delay)
     }
-
+//
     fun hideEntity(target: Player, hidden: Entity) { // TODO: REPLACE THIS
        // if (hook == null || !hook!!.canShowSafely(target)) {
 
