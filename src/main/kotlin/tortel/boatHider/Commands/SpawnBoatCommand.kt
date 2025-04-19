@@ -1,5 +1,10 @@
 package tortel.gamer.BoatHider.Commands
 
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.phys.Vec3
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -8,6 +13,7 @@ import revxrsal.commands.annotation.Default
 import revxrsal.commands.annotation.Optional
 import revxrsal.commands.annotation.Suggest
 import tortel.boatHider.Main
+import tortel.gamer.BoatHider.nms.V1_21_R1.CollisionlessBoat
 
 class SpawnBoatCommand {
 
@@ -34,11 +40,12 @@ class SpawnBoatCommand {
             return
         }
 
-        val location = Location(world, finalx,finaly,finalz)
+        val location = Location(world, finalx, finaly, finalz)
         Main.nms?.spawnBoat(location)
         sender.sendMessage("§aSpawned a boat at $finalx, $finalz, $finalz in world '${world.name}'.")
     }
 }
+
 
 //package tortel.gamer.BoatHider.Commands
 //

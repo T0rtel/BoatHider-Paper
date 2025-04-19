@@ -1,5 +1,6 @@
 package tortel.gamer.BoatHider
 
+import org.bukkit.Bukkit
 import tortel.gamer.BoatHider.nms.INMS
 import org.bukkit.Chunk
 import org.bukkit.craftbukkit.entity.CraftBoat
@@ -92,19 +93,22 @@ class PersistenceListeners(nms: INMS, plugin: JavaPlugin) : Listener {
     private fun replaceBoat(boat: Boat) {
         val newBoat : Boat? = nms.spawnBoat(boat.getLocation())
 
-        if (newBoat != null) {
-            newBoat.setBoatType(boat.getBoatType())
-        }
-        //get everyone inside that boat if there is
-        val var3: Iterator<*> = boat.getPassengers().iterator()
-        while (var3.hasNext()) {
-            val passenger = var3.next() as Entity
-            if (newBoat != null) {
-                newBoat.addPassenger(passenger)
-            }
+        for (passenger in boat.passengers) {
+            newBoat?.addPassenger(passenger)
         }
 
         boat.remove()
+        Bukkit.getEntity(boat.uniqueId)?.remove()
         println("old boat should be removed now.")
+        //get everyone inside that boat if there is
+//        val var3: Iterator<*> = boat.getPassengers().iterator()
+//        while (var3.hasNext()) {
+//            val passenger = var3.next() as Entity
+//            if (newBoat != null) {
+//                newBoat.addPassenger(passenger)
+//            }
+//        }
+
+
     }
 }

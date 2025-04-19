@@ -14,7 +14,7 @@ class CollisionlessBoat(
     entitytype: EntityType<out Boat?>, level: Level,
     dropItem: Supplier<Item>?
 )
-    : Boat(entitytype, level, null) {
+    : Boat(entitytype, level, dropItem) {
 
 //    override fun canCollideWithBukkit(entity: Entity): Boolean {
 //        return false
@@ -33,7 +33,7 @@ class CollisionlessBoat(
     }
 
     override fun push(entity: Entity) {
-        return
+        //return
     }
 
     override fun rideHeight(p0: EntityDimensions): Double {
