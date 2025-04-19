@@ -99,7 +99,7 @@ class PersistenceListeners(nms: INMS, plugin: JavaPlugin) : Listener {
 
         boat.remove()
         Bukkit.getEntity(boat.uniqueId)?.remove()
-        println("old boat should be removed now.")
+        //println("old boat should be removed now.")
         //get everyone inside that boat if there is
 //        val var3: Iterator<*> = boat.getPassengers().iterator()
 //        while (var3.hasNext()) {
