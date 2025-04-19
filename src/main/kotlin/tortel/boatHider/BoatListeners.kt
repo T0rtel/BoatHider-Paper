@@ -163,6 +163,8 @@ class BoatListeners(private val plugin: Plugin) : Listener {
         for (onlinePlayer in Bukkit.getOnlinePlayers()) {
             val entity = onlinePlayer as Entity
             player!!.showEntity(plugin, entity)
+            val boat = entity.vehicle?: continue
+            player.showEntity(plugin, boat)
         }
         /*
         while (var2.hasNext()) {

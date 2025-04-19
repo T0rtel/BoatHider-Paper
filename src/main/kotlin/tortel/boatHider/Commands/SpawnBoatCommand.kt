@@ -41,7 +41,7 @@ class SpawnBoatCommand {
         }
 
         val location = Location(world, finalx, finaly, finalz)
-        Main.nms?.spawnBoat(location)
+        Main.nms?.spawnBoat(null,location)
         sender.sendMessage("§aSpawned a boat at $finalx, $finalz, $finalz in world '${world.name}'.")
     }
 }

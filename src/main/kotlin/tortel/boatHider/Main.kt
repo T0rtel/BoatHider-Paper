@@ -27,7 +27,8 @@ class Main : JavaPlugin() {
         var nms: INMS? = NMSV1_21_R4()
 
     }
-
+    //TODO: fix /hideboats false doesnt show boats again,
+    // and make the boats types configurable
     override fun onEnable() {
         if (Bukkit.getVersion().split("-")[0] != "1.21.4"){
             println("not the required version.")
@@ -39,6 +40,7 @@ class Main : JavaPlugin() {
         listeners = BoatListeners(this)
         Bukkit.getPluginManager().registerEvents(listeners!!, this)
         Bukkit.getPluginManager().registerEvents(PersistenceListeners(nms!!, this), this)
+
     }
 
     override fun onDisable() {
@@ -52,7 +54,7 @@ class Main : JavaPlugin() {
         lamp.register(HidingBoatsCommand())
         lamp.register(ForceInBoatCommand())
         lamp.register(SpawnBoatCommand())
-        lamp.register(TogglePlayerCollisions())
+        //lamp.register(TogglePlayerCollisions())
 //        getCommand("hideboats")?.setExecutor(HidingBoatsCommand())
 //        getCommand("forceinboat")?.setExecutor(ForceInBoatCommand())
 //        getCommand("spawnboat")?.setExecutor(SpawnBoatCommand())

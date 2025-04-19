@@ -91,7 +91,7 @@ class PersistenceListeners(nms: INMS, plugin: JavaPlugin) : Listener {
     }
 
     private fun replaceBoat(boat: Boat) {
-        val newBoat : Boat? = nms.spawnBoat(boat.getLocation())
+        val newBoat : Boat? = nms.spawnBoat(boat, null)
 
         for (passenger in boat.passengers) {
             newBoat?.addPassenger(passenger)

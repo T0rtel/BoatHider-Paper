@@ -1,6 +1,7 @@
 package tortel.gamer.BoatHider.Commands
 
 import org.bukkit.Bukkit
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.annotation.Optional
@@ -33,7 +34,7 @@ class ForceInBoatCommand {
         }
 
         // Spawn the boat and add the player as a passenger
-        val boat = Main.nms?.spawnBoat(location)
+        val boat = Main.nms?.spawnBoat(null, location)
         if (boat != null) {
             boat.addPassenger(targetPlayer)
             sender.sendMessage("§aSpawned a boat and forced ${targetPlayer.name} into it.")

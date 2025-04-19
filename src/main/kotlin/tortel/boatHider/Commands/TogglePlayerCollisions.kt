@@ -5,9 +5,9 @@ import org.bukkit.entity.Player
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.annotation.Optional
 import revxrsal.commands.annotation.Suggest
-
+//not used anymore
 class TogglePlayerCollisions {
-
+    //not used anymore
     @Command("toggleplayercollisions")
     fun onCommand(
         sender: Player,
