@@ -58,8 +58,8 @@ class Main : JavaPlugin() {
         Bukkit.getPluginManager().registerEvents(listeners!!, this)
         Bukkit.getPluginManager().registerEvents(PersistenceListeners(nms!!, this), this)
 
-        test().runTaskTimer(instance!!, 0, 1) // every 10 seconds
-
+        //test().runTaskTimer(instance!!, 0, 1) // every 10 seconds
+        GridPlacementSystem().runTaskTimer(instance!!, 0, 1)
         hitboxEntity = Bukkit.getWorld("world")!!.spawnEntity(Location(Bukkit.getWorld("world"), 0.0,0.0,0.0), EntityType.INTERACTION) as Interaction
 
         hitboxEntity.isGlowing = true
@@ -146,157 +146,201 @@ class Main : JavaPlugin() {
         }
     }
 
-    class test() : BukkitRunnable() {
-
-        private var angle = 0f
-
-        override fun run() {
-            angle += 5f // Increase rotation angle
-            if (angle >= 360f) angle = 0f
-
-            Bukkit.getOnlinePlayers().forEach { player ->
-                if (player.gameMode == GameMode.SPECTATOR) return
-                val result = player.world.rayTraceBlocks(player.eyeLocation, player.eyeLocation.direction, 3.0,
-                    FluidCollisionMode.NEVER, true) ?: return
-                val block = result.hitBlock?: return
-                val face : BlockFace? = result.hitBlockFace
-                var pos: Location = result.hitPosition.toLocation(player.world)
-
-                //do block checks
-                if (!block.type.isOccluding) return
-
-                if (block.blockData is Slab || block.blockData is Stairs) return
-
-                if (!block.isSolid) return
 
 
-                //Bukkit.broadcastMessage("$rotationyaw")
-
-                val direction = if (face != null) {
-                    // Use the opposite direction of the hit face to move towards player
-                    Vector(-face.modX.toDouble(), -face.modY.toDouble(), -face.modZ.toDouble())
-                } else {
-                    // Fallback: use reverse of player's look direction
-                    player.eyeLocation.direction.normalize().multiply(-1.0)
-                }
-
-                val offset = when(face){
-                    BlockFace.UP -> Vector(0.0, 0.6, 0.0)
-                    BlockFace.DOWN -> Vector(0.0, -0.6, 0.0)
-
-                    BlockFace.NORTH -> Vector(0.0, 0.1, 0.0)
-                    BlockFace.SOUTH -> Vector(0.0, 0.1, 0.0)//.add(direction.multiply(0.55))//0.0,0.1,-0.6
-                    BlockFace.EAST -> Vector(0.0, 0.1, 0.0)//.add(direction.multiply(0.55))
-                    BlockFace.WEST -> Vector(0.0, 0.1, 0.0)//.add(direction.multiply(0.55))
-
-                    else -> Vector(0.0, 0.0, 0.0)
-                }.add(direction.multiply(0.55))
-
-                val hitboxoffset = when(face){
-                    BlockFace.UP -> Vector(0.0, 0.6, 0.0)
-                    BlockFace.DOWN -> Vector(0.0, -0.6, 0.0)
-
-                    BlockFace.NORTH -> Vector(0.0, 0.5, 0.0)
-                    BlockFace.SOUTH -> Vector(0.0, 0.5, 0.0)//Vector(0.0, 0.5, -0.3)
-                    BlockFace.EAST -> Vector(0.0, 0.5, 0.0)
-                    BlockFace.WEST -> Vector(0.0, 0.5, 0.0)
-
-                    else -> Vector(0.0, 0.0, 0.0)
-                }.add(direction.multiply(0.55))
-
-                val bhitboxoffset = when(face){
-                    BlockFace.UP -> Vector(0.0, 0.6, 0.0)
-                    BlockFace.DOWN -> Vector(0.0, -0.6, 0.0)
-
-                    BlockFace.NORTH -> Vector(0.0, 0.2, 0.0)
-                    BlockFace.SOUTH -> Vector(0.0, 0.2, 0.0)//Vector(0.0, 0.5, -0.3)
-                    BlockFace.EAST -> Vector(0.0, 0.2, 0.0)
-                    BlockFace.WEST -> Vector(0.0, 0.2, 0.0)//0.4
-
-                    else -> Vector(0.0, 0.0, 0.0)
-                }.add(direction.multiply(-4.5))
-
-                val yrotation = when(face){
-                    BlockFace.UP -> 0f
-                    BlockFace.DOWN -> 0f
-
-                    BlockFace.NORTH -> 180f
-                    BlockFace.SOUTH -> 0f
-                    BlockFace.EAST -> 90f
-                    BlockFace.WEST -> -90f
-
-                    else -> 0f
-                }
-
-                pos = pos.subtract(offset)
-
-                //val offset = Vector(0.0, 0.1, -0.6)
-                DisplayEntity.teleport(pos) // // //.subtract(direction.normalize().multiply(0.5))
-               // val hitboxoffset = Vector(0.0, 0.0, 0.0)//Vector(0.0, 0.5, -0.3) <- south only
-                hitboxEntity.teleport(DisplayEntity.location.subtract(hitboxoffset))
-                bhitboxEntity.teleport(DisplayEntity.location.subtract(bhitboxoffset))
-
-
-                rotateEntity(DisplayEntity, yrotation)
-
-                val boundingBox = hitboxEntity.boundingBox
-
-                for (x in boundingBox.maxX.toInt() ..boundingBox.minX.toInt()){
-                    for (y in boundingBox.maxY.toInt()..boundingBox.minY.toInt()){
-                        for (z in boundingBox.maxZ.toInt()..boundingBox.minZ.toInt()){
-                            val b = player.world.getBlockAt(x,y,z)
-                            Bukkit.broadcastMessage("$x $y $z")
-                            player.world.spawnParticle(
-                                Particle.DUST,
-                                b.location.add(0.5,0.5,0.5),
-                                20,
-                                0.1, 0.1, 0.1, 0.0,
-                                Particle.DustOptions(Color.GREEN, 2.0f)
-                            )
-                        }
-                    }
-                }
-
-//                val bboundingBox = bhitboxEntity.boundingBox
+//    class test() : BukkitRunnable() {
 //
-//                for (x in bboundingBox.maxX.toInt() ..bboundingBox.minX.toInt()){
-//                    for (y in bboundingBox.maxY.toInt()..bboundingBox.minY.toInt()){
-//                        for (z in bboundingBox.maxZ.toInt()..bboundingBox.minZ.toInt()){
-//                            val b = player.world.getBlockAt(x,y,z)
+//        private var angle = 0f
+//
+//        override fun run() {
+//            angle += 5f // Increase rotation angle
+//            if (angle >= 360f) angle = 0f
+//
+//            Bukkit.getOnlinePlayers().forEach { player ->
+//                if (player.gameMode == GameMode.SPECTATOR) return
+//                val result = player.world.rayTraceBlocks(player.eyeLocation, player.eyeLocation.direction, 3.0,
+//                    FluidCollisionMode.NEVER, true) ?: return
+//                val block = result.hitBlock?: return
+//                val face : BlockFace? = result.hitBlockFace
+//                var pos: Location = result.hitPosition.toLocation(player.world)
+//
+//                //do block checks
+//                if (!block.type.isOccluding) return
+//
+//                if (block.blockData is Slab || block.blockData is Stairs) return
+//
+//                if (!block.isSolid) return
+//
+//
+//
+//                val direction = if (face != null) {
+//                    // Use the opposite direction of the hit face to move towards player
+//                    Vector(-face.modX.toDouble(), -face.modY.toDouble(), -face.modZ.toDouble())
+//                } else {
+//                    // Fallback: use reverse of player's look direction
+//                    player.eyeLocation.direction.normalize().multiply(-1.0)
+//                }
+//
+//                val offset = when(face){
+//                    BlockFace.UP -> Vector(0.0, 0.6, 0.0)
+//                    BlockFace.DOWN -> Vector(0.0, -0.6, 0.0)
+//
+//                    BlockFace.NORTH -> Vector(0.0, 0.1, 0.0)
+//                    BlockFace.SOUTH -> Vector(0.0, 0.1, 0.0)
+//                    BlockFace.EAST -> Vector(0.0, 0.1, 0.0)
+//                    BlockFace.WEST -> Vector(0.0, 0.1, 0.0)
+//
+//                    else -> Vector(0.0, 0.0, 0.0)
+//                }.add(direction.multiply(0.55))
+//
+//                val hitboxoffset = when(face){
+//                    BlockFace.UP -> Vector(0.0, 0.6, 0.0)
+//                    BlockFace.DOWN -> Vector(0.0, -0.6, 0.0)
+//
+//                    BlockFace.NORTH -> Vector(0.0, 0.5, 0.0)
+//                    BlockFace.SOUTH -> Vector(0.0, 0.5, 0.0)//Vector(0.0, 0.5, -0.3)
+//                    BlockFace.EAST -> Vector(0.0, 0.5, 0.0)
+//                    BlockFace.WEST -> Vector(0.0, 0.5, 0.0)
+//
+//                    else -> Vector(0.0, 0.0, 0.0)
+//                }.add(direction.multiply(0.55))
+//
+//                val bhitboxoffset = when(face){
+//                    BlockFace.UP -> Vector(0.0, 0.6, 0.0)
+//                    BlockFace.DOWN -> Vector(0.0, -0.6, 0.0)
+//
+//                    BlockFace.NORTH -> Vector(0.0, 0.5, 0.0)
+//                    BlockFace.SOUTH -> Vector(0.0, 0.5, 0.0)//Vector(0.0, 0.5, -0.3)
+//                    BlockFace.EAST -> Vector(0.0, 0.5, 0.0)
+//                    BlockFace.WEST -> Vector(0.0, 0.5, 0.0)
+//
+//                    else -> Vector(0.0, 0.0, 0.0)
+//                }.add(direction.multiply(-4.5))
+//
+//                val yrotation = when(face){
+//                    BlockFace.UP -> 0f
+//                    BlockFace.DOWN -> 0f
+//
+//                    BlockFace.NORTH -> 180f
+//                    BlockFace.SOUTH -> 0f
+//                    BlockFace.EAST -> 90f
+//                    BlockFace.WEST -> -90f
+//
+//                    else -> 0f
+//                }
+//
+//                pos = pos.subtract(offset)
+//
+//                //grid based placement
+//
+//                //val offset = Vector(0.0, 0.1, -0.6)
+//                DisplayEntity.teleport(pos) // // //.subtract(direction.normalize().multiply(0.5))
+//               // val hitboxoffset = Vector(0.0, 0.0, 0.0)//Vector(0.0, 0.5, -0.3) <- south only
+//                hitboxEntity.teleport(DisplayEntity.location.subtract(hitboxoffset))
+//                bhitboxEntity.teleport(DisplayEntity.location.subtract(bhitboxoffset))
+//
+//
+//                rotateEntity(DisplayEntity, yrotation)
+//
+//                val boundingBox = hitboxEntity.boundingBox
+//
+//                val min = boundingBox.min
+//                val max = boundingBox.max
+//
+//                // Iterate through all blocks in the bounding box
+//                for (x in min.blockX..max.blockX) {
+//                    for (y in min.blockY..max.blockY) {
+//                        for (z in min.blockZ..max.blockZ) {
+//                            val blockLocation = org.bukkit.Location(player.world, x.toDouble() + 0.5, y.toDouble() + 0.5, z.toDouble() + 0.5)
 //                            player.world.spawnParticle(
 //                                Particle.DUST,
-//                                b.location.add(0.5,0.5,0.5),
-//                                20,
-//                                0.1, 0.1, 0.1, 0.0,
-//                                Particle.DustOptions(Color.GREEN, 2.0f)
+//                                blockLocation,
+//                                1,
+//                                0.0, 0.0, 0.0, 0.0,
+//                                Particle.DustOptions(org.bukkit.Color.RED, 1.0f)
 //                            )
+//
 //                        }
 //                    }
 //                }
-
-
-//                player.world.spawnParticle(
-//                    Particle.DUST,
-//                    block.location.add(0.5, 0.5, 0.5),
-//                    20,
-//                    0.1, 0.1, 0.1, 0.0,
-//                    Particle.DustOptions(Color.GREEN, 0.2f)
-//                )
-            }
-        }
-    }
+//
+//                val bmin = bhitboxEntity.boundingBox.min
+//                val bmax = bhitboxEntity.boundingBox.max
+//
+//                // Iterate through all blocks in the bounding box
+//                for (x in bmin.blockX..bmax.blockX) {
+//                    for (y in bmin.blockY..bmax.blockY) {
+//                        for (z in bmin.blockZ..bmax.blockZ) {
+//                            val blockLocation = org.bukkit.Location(player.world, x.toDouble() + 0.5, y.toDouble() + 0.5, z.toDouble() + 0.5)
+//
+//                            if (blockLocation.distance(DisplayEntity.location) > 2.0) continue
+//                            player.world.spawnParticle(
+//                                Particle.DUST,
+//                                blockLocation,
+//                                1,
+//                                0.0, 0.0, 0.0, 0.0,
+//                                Particle.DustOptions(org.bukkit.Color.BLUE, 1.0f)
+//                            )
+//
+//                        }
+//                    }
+//                }
+////                for (x in boundingBox.maxX.toInt() ..boundingBox.minX.toInt()){
+////                    for (y in boundingBox.maxY.toInt()..boundingBox.minY.toInt()){
+////                        for (z in boundingBox.maxZ.toInt()..boundingBox.minZ.toInt()){
+////                            Bukkit.broadcastMessage("$x $y $z")
+////                            val b = player.world.getBlockAt(x,y,z)
+////                            player.world.spawnParticle(
+////                                Particle.DUST,
+////                                b.location.add(0.5,0.5,0.5),
+////                                20,
+////                                0.1, 0.1, 0.1, 0.0,
+////                                Particle.DustOptions(Color.GREEN, 2.0f)
+////                            )
+////                        }
+////                    }
+////                }
+//
+////                val bboundingBox = bhitboxEntity.boundingBox
+////
+////                for (x in bboundingBox.maxX.toInt() ..bboundingBox.minX.toInt()){
+////                    for (y in bboundingBox.maxY.toInt()..bboundingBox.minY.toInt()){
+////                        for (z in bboundingBox.maxZ.toInt()..bboundingBox.minZ.toInt()){
+////                            val b = player.world.getBlockAt(x,y,z)
+////                            player.world.spawnParticle(
+////                                Particle.DUST,
+////                                b.location.add(0.5,0.5,0.5),
+////                                20,
+////                                0.1, 0.1, 0.1, 0.0,
+////                                Particle.DustOptions(Color.GREEN, 2.0f)
+////                            )
+////                        }
+////                    }
+////                }
+//
+//
+////                player.world.spawnParticle(
+////                    Particle.DUST,
+////                    block.location.add(0.5, 0.5, 0.5),
+////                    20,
+////                    0.1, 0.1, 0.1, 0.0,
+////                    Particle.DustOptions(Color.GREEN, 0.2f)
+////                )
+//            }
+//        }
+//    }
 
 
 
 
 }
 
-private fun Main.test.rotateEntity(entity : ItemDisplay, degree : Float) {
-        entity.setTransformationMatrix(Matrix4f().rotateY((toRadians(degree.toDouble()).toFloat())))// + 0.1f /* prevent the client from interpolating in reverse */
-//    entity.transformation = Transformation(
-//        entity.transformation.translation,
-//        AxisAngle4f(-Math.toRadians(degree.toDouble()).toFloat(), 1f, 0f, 0f),
-//        entity.transformation.scale,
-//        AxisAngle4f(Math.toRadians(degree.toDouble()).toFloat(), 0f, 0f, 1f),
-//    )
-}
+//private fun Main.test.rotateEntity(entity : ItemDisplay, degree : Float) {
+//        entity.setTransformationMatrix(Matrix4f().rotateY((toRadians(degree.toDouble()).toFloat())))// + 0.1f /* prevent the client from interpolating in reverse */
+////    entity.transformation = Transformation(
+////        entity.transformation.translation,
+////        AxisAngle4f(-Math.toRadians(degree.toDouble()).toFloat(), 1f, 0f, 0f),
+////        entity.transformation.scale,
+////        AxisAngle4f(Math.toRadians(degree.toDouble()).toFloat(), 0f, 0f, 1f),
+////    )
+//}
