@@ -1,6 +1,7 @@
 package tortel.boatHider
 
 import org.bukkit.Bukkit
+import org.bukkit.Color
 import org.bukkit.FluidCollisionMode
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -44,6 +45,7 @@ class GridPlacementSystem() : BukkitRunnable() {
 
             val block = result.hitBlock ?: return@forEach
             val face: BlockFace? = result.hitBlockFace
+            if (face == BlockFace.DOWN) return
             var pos: Location = result.hitPosition.toLocation(player.world)
 
             // Block checks
@@ -64,8 +66,8 @@ class GridPlacementSystem() : BukkitRunnable() {
             // ... [rest of your existing code for offsets and entity placement]
 
             val offset = when(face){
-                BlockFace.UP -> Vector(0.0, 0.6, 0.0)
-                BlockFace.DOWN -> Vector(0.0, -0.6, 0.0)
+                BlockFace.UP -> Vector(0.0, 0.0, 0.1)
+                BlockFace.DOWN -> Vector(0.0, 0.0, 0.0)
 
                 BlockFace.NORTH -> Vector(0.0, 0.1, 0.0)
                 BlockFace.SOUTH -> Vector(0.0, 0.1, 0.0)
@@ -77,7 +79,7 @@ class GridPlacementSystem() : BukkitRunnable() {
 
             val hitboxoffset = when(face){
                 BlockFace.UP -> Vector(0.0, 0.6, 0.0)
-                BlockFace.DOWN -> Vector(0.0, -0.6, 0.0)
+                BlockFace.DOWN -> Vector(0.0, 0.0, 0.0)
 
                 BlockFace.NORTH -> Vector(0.0, 0.5, 0.0)
                 BlockFace.SOUTH -> Vector(0.0, 0.5, 0.0)//Vector(0.0, 0.5, -0.3)
@@ -88,8 +90,8 @@ class GridPlacementSystem() : BukkitRunnable() {
             }.add(direction.multiply(0.55))
 
             val bhitboxoffset = when(face){
-                BlockFace.UP -> Vector(0.0, 0.6, 0.0)
-                BlockFace.DOWN -> Vector(0.0, -0.6, 0.0)
+                BlockFace.UP -> Vector(0.0, 0.7, 0.0)
+                BlockFace.DOWN -> Vector(0.0, 0.6, 0.0)
 
                 BlockFace.NORTH -> Vector(0.0, 0.5, 0.0)
                 BlockFace.SOUTH -> Vector(0.0, 0.5, 0.0)//Vector(0.0, 0.5, -0.3)
@@ -100,13 +102,15 @@ class GridPlacementSystem() : BukkitRunnable() {
             }.add(direction.multiply(-4.5))
 
             val yrotation = when(face){
-                BlockFace.UP -> 0f
-                BlockFace.DOWN -> 0f
-
                 BlockFace.NORTH -> 180f
                 BlockFace.SOUTH -> 0f
                 BlockFace.EAST -> 90f
                 BlockFace.WEST -> -90f
+
+                else -> 0f
+            }
+            val xrotation = when(face){
+                BlockFace.UP -> -90f
 
                 else -> 0f
             }
@@ -121,7 +125,8 @@ class GridPlacementSystem() : BukkitRunnable() {
             hitboxEntity.teleport(DisplayEntity.location.subtract(hitboxoffset))
             bhitboxEntity.teleport(DisplayEntity.location.subtract(bhitboxoffset))
 
-            rotateEntity(DisplayEntity, yrotation)
+            rotateEntityXY(DisplayEntity, xrotation, yrotation)
+
 
             val hitboxBlocks = getBlocksInBoundingBox(hitboxEntity.boundingBox, player.world, 3.0, DisplayEntity)
             val bhitboxBlocks = getBlocksInBoundingBox(bhitboxEntity.boundingBox, player.world, 2.0, DisplayEntity)
@@ -129,14 +134,24 @@ class GridPlacementSystem() : BukkitRunnable() {
             val isHitboxColliding = hitboxBlocks.any { it.isSolid }
             val BHitboxContainsAir = bhitboxBlocks.any { it.isAir }
 
-            Bukkit.broadcastMessage("H is colliding: $isHitboxColliding || BH has air:$BHitboxContainsAir}")
+            val isPlacementValid = !isHitboxColliding && !BHitboxContainsAir
+
+            if (isPlacementValid){
+                Bukkit.broadcastMessage("CAN PALCE!")
+            }else{
+                Bukkit.broadcastMessage("CANNOT PLACE!")
+            }
         }
     }
 
-    private fun rotateEntity(entity : ItemDisplay, degree : Float) {
-        entity.setTransformationMatrix(Matrix4f().rotateY((toRadians(degree.toDouble()).toFloat())))// + 0.1f /* prevent the client from interpolating in reverse */
+    private fun rotateEntityXY(entity : ItemDisplay, Xdegree : Float, Ydegree : Float) {
+        entity.setTransformationMatrix(Matrix4f().apply {
+            rotateX(toRadians(Xdegree.toDouble()).toFloat())
+            rotateY(toRadians(Ydegree.toDouble()).toFloat())
+        })
+        //entity.setTransformationMatrix(Matrix4f().rotateY((toRadians(Ydegree.toDouble()).toFloat())))
 
-}
+    }
 
     private fun applyGridSnapping(location: Location): Location {
         val world = location.world
@@ -165,8 +180,9 @@ class GridPlacementSystem() : BukkitRunnable() {
         )
     }
 
-    fun getBlocksInBoundingBox(boundingBox: BoundingBox, world: World, MaxDist : Double, EntityToCompareDistTo : Entity): List<Material> {
+    fun getBlocksInBoundingBox(boundingBox: BoundingBox, world: World, MaxDist: Double, EntityToCompareDistTo: Entity): List<Material> {
         val blockCounts = mutableListOf<Material>()
+        val entityLoc = EntityToCompareDistTo.location
 
         val min = boundingBox.min
         val max = boundingBox.max
@@ -176,7 +192,11 @@ class GridPlacementSystem() : BukkitRunnable() {
             for (y in min.blockY..max.blockY) {
                 for (z in min.blockZ..max.blockZ) {
                     val block = world.getBlockAt(x, y, z)
-                    if(block.location.distance(EntityToCompareDistTo.location) > MaxDist) continue
+                    val blockCenter = Location(block.world, x + 0.5, y + 0.5, z + 0.5)
+
+                    val dist = entityLoc.distance(blockCenter)
+
+                    if (dist > MaxDist) continue
 
                     blockCounts.add(block.type)
                 }
