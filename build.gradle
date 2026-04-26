@@ -15,49 +15,6 @@ repositories {
         name = "papermc-repo"
         url = "https://repo.papermc.io/repository/maven-public/"
     }
-    maven {
-        url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')
-    }
-
-    maven {
-        url = uri('https://oss.sonatype.org/content/groups/public/')
-    }
-
-    maven {
-        url = uri('https://jitpack.io')
-    }
-
-    maven {
-        url = uri('https://repo.aikar.co/content/groups/aikar/')
-    }
-
-    maven {
-        url = uri('https://repo.dmulloy2.net/repository/public/')
-    }
-
-    maven {
-        url = uri('https://repo.alessiodp.com/releases/')
-    }
-
-    maven {
-        url = uri('https://repo.extendedclip.com/content/repositories/placeholderapi/')
-    }
-
-    maven {
-        url = uri('https://repo.onarandombox.com/content/groups/public/')
-    }
-
-    maven {
-        url = uri('https://mvn.lumine.io/repository/maven-public/')
-    }
-
-    maven {
-        url = uri('https://maven.citizensnpcs.co/repo')
-    }
-
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2/')
-    }
 }
 
 dependencies {
