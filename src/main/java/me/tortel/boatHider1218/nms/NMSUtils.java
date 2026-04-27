@@ -1,0 +1,73 @@
+package me.tortel.boatHider1218.nms;
+
+import me.tortel.boatHider1218.Main;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.item.Items;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftBoat;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
+import org.bukkit.scheduler.BukkitRunnable;
+
+public class NMSUtils {
+
+    public org.bukkit.entity.Boat spawnBoat(org.bukkit.entity.Boat oldBoat, Location locationn) {
+        Location location;
+        CollisionlessBoat boat;
+        ServerLevel level;
+
+        if (oldBoat != null && locationn == null) {
+            location = oldBoat.getLocation();
+            level = ((CraftWorld) location.getWorld()).getHandle();
+            boat = new CollisionlessBoat(
+                    (EntityType<? extends Boat>) bukkitToNMSEntityType(oldBoat.getType()),
+                    level,
+                    () -> Items.JUNGLE_BOAT
+            );
+        } else if (locationn != null && oldBoat == null) {
+            location = locationn;
+            level = ((CraftWorld) location.getWorld()).getHandle();
+            boat = new CollisionlessBoat(
+                    EntityType.ACACIA_BOAT,
+                    level,
+                    () -> Items.JUNGLE_BOAT
+            );
+        } else {
+            return null;
+        }
+
+        float yaw = Location.normalizeYaw(location.getYaw());
+        boat.setRot(yaw, 0.0f);
+        boat.setPos(location.getX(), location.getY(), location.getZ());
+
+        level.addFreshEntity(boat);
+        System.out.println("spawning a new collisionless boat");
+
+        org.bukkit.entity.Entity entity = level.getWorld().getEntity(boat.getUUID());
+        return entity instanceof org.bukkit.entity.Boat ? (org.bukkit.entity.Boat) entity : null;
+    }
+
+
+    public boolean isCollisionless(org.bukkit.entity.Boat boat) {
+        return ((CraftBoat) boat).getHandle() instanceof CollisionlessBoat;
+    }
+
+    public static EntityType<? extends Boat> bukkitToNMSEntityType(org.bukkit.entity.EntityType bukkitType) {
+        switch (bukkitType) {
+            case OAK_BOAT:       return EntityType.OAK_BOAT;
+            case SPRUCE_BOAT:    return EntityType.SPRUCE_BOAT;
+            case BIRCH_BOAT:     return EntityType.BIRCH_BOAT;
+            case JUNGLE_BOAT:    return EntityType.JUNGLE_BOAT;
+            case ACACIA_BOAT:    return EntityType.ACACIA_BOAT;
+            case DARK_OAK_BOAT:  return EntityType.DARK_OAK_BOAT;
+            case MANGROVE_BOAT:  return EntityType.MANGROVE_BOAT;
+            default:             return null;
+        }
+    }
+
+}
