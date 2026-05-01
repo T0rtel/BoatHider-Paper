@@ -1,6 +1,6 @@
 package me.tortel.boatHider1218.listeners;
 
-import me.tortel.boatHider1218.Main;
+import me.tortel.boatHider1218.BoatHiderMain;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -10,7 +10,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class BoatListeners implements Listener {
@@ -61,9 +60,9 @@ public class BoatListeners implements Listener {
         Player player = isPlayer ? (Player) exited : null;
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            onlinePlayer.showEntity(Main.getInstance(), exited);
+            onlinePlayer.showEntity(BoatHiderMain.getInstance(), exited);
             if (event.getVehicle().getPassengers().size() == 1) {
-                onlinePlayer.showEntity(Main.getInstance(), vehicle);
+                onlinePlayer.showEntity(BoatHiderMain.getInstance(), vehicle);
             }
         }
 
@@ -82,7 +81,7 @@ public class BoatListeners implements Listener {
                 showEveryoneToPlayer((Player) entity);
             }
             for (Player player : Bukkit.getOnlinePlayers()) {
-                player.showEntity(Main.getInstance(), entity);
+                player.showEntity(BoatHiderMain.getInstance(), entity);
             }
         }
     }
@@ -104,7 +103,7 @@ public class BoatListeners implements Listener {
                         }
                     }
                 }
-            }.runTaskLater(Main.getInstance(), 5L);
+            }.runTaskLater(BoatHiderMain.getInstance(), 5L);
         } else {
             showEveryoneToPlayer(event.getPlayer());
         }
@@ -112,10 +111,10 @@ public class BoatListeners implements Listener {
 
     public static void showEveryoneToPlayer(Player player) {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            player.showEntity(Main.getInstance(), onlinePlayer);
+            player.showEntity(BoatHiderMain.getInstance(), onlinePlayer);
             Entity boat = onlinePlayer.getVehicle();
             if (boat != null) {
-                player.showEntity(Main.getInstance(), boat);
+                player.showEntity(BoatHiderMain.getInstance(), boat);
             }
         }
     }
@@ -137,11 +136,11 @@ public class BoatListeners implements Listener {
                     }
                 }
             }
-        }.runTaskLater(Main.getInstance(), delay);
+        }.runTaskLater(BoatHiderMain.getInstance(), delay);
     }
 
     public static void hideEntity(Player target, Entity hidden) {
-        target.hideEntity(Main.getInstance(), hidden);
+        target.hideEntity(BoatHiderMain.getInstance(), hidden);
     }
 
     public static void setHidingBoats(boolean value) {

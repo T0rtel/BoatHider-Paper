@@ -1,4 +1,4 @@
 name: BoatHider1-21-8
 version: '1.0-SNAPSHOT'
-main: me.tortel.boatHider1218.Main
+main: me.tortel.boatHider1218.BoatHiderMain
 api-version: '1.21'
