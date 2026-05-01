@@ -1,5 +1,6 @@
 package me.tortel.boatHider1218.api;
 
+import me.tortel.boatHider1218.listeners.BoatListeners;
 import me.tortel.boatHider1218.nms.NMSUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,6 +22,10 @@ public class BoatHiderAPI {
         if (boat != null) {
             boat.addPassenger(target);
         }
+    }
+
+    public void hideBoats(Boolean value) {
+        BoatListeners.setHidingBoats(value);
     }
 
     public void forceAllIntoBoat() {
