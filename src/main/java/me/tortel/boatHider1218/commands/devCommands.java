@@ -1,9 +1,7 @@
 package me.tortel.boatHider1218.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.*;
 import me.tortel.boatHider1218.listeners.BoatListeners;
 import me.tortel.boatHider1218.nms.NMSUtils;
 import org.bukkit.Bukkit;
@@ -21,17 +19,34 @@ public class devCommands extends BaseCommand {
     // /dev forceinboat <player>
     @Subcommand("forceinboat")
     @CommandCompletion("@players")
-    public void forceinboat(CommandSender sender, Player target) {
-        if (!(sender instanceof Player) || !((Player) sender).isOp()) {
+    public void forceinboat(CommandSender sender, @Optional String targetName) {
+        if (!sender.isOp()) {
             sender.sendMessage("§cYou don't have permission to use this command.");
             return;
         }
 
-        if (!target.isOnline()) {
+        if (targetName == null) {
+            sender.sendMessage("§cUsage: /dev forceinboat <player|@a>");
+            return;
+        }
+
+        if (targetName.equals("@a")) {
+            for (Player target : Bukkit.getOnlinePlayers()) {
+                forceIntoBoat(sender, target);
+            }
+            return;
+        }
+
+        Player target = Bukkit.getPlayerExact(targetName);
+        if (target == null || !target.isOnline()) {
             sender.sendMessage("§cPlayer not found or not online.");
             return;
         }
 
+        forceIntoBoat(sender, target);
+    }
+
+    private void forceIntoBoat(CommandSender sender, Player target) {
         Location location = target.getLocation();
         location.setYaw(target.getEyeLocation().getYaw());
 
@@ -40,7 +55,7 @@ public class devCommands extends BaseCommand {
             boat.addPassenger(target);
             sender.sendMessage("§aSpawned a boat and forced " + target.getName() + " into it.");
         } else {
-            sender.sendMessage("§cFailed to spawn the boat.");
+            sender.sendMessage("§cFailed to spawn the boat for " + target.getName() + ".");
         }
     }
 
@@ -61,10 +76,10 @@ public class devCommands extends BaseCommand {
     // /dev spawnboat [world] [x] [y] [z]
     @Subcommand("spawnboat")
     @CommandCompletion("@worlds")
-    public void spawnboat(CommandSender sender, @co.aikar.commands.annotation.Optional String worldName,
-                          @co.aikar.commands.annotation.Optional Double x,
-                          @co.aikar.commands.annotation.Optional Double y,
-                          @co.aikar.commands.annotation.Optional Double z) {
+    public void spawnboat(CommandSender sender, @Optional String worldName,
+                          @Optional Double x,
+                          @Optional Double y,
+                          @Optional Double z) {
         if (!(sender instanceof Player) || !((Player) sender).isOp()) {
             sender.sendMessage("§cYou don't have permission to use this command.");
             return;
@@ -87,19 +102,19 @@ public class devCommands extends BaseCommand {
     }
 
     // /dev togglecollisions <true|false>
-    @Subcommand("togglecollisions")
-    @CommandCompletion("true|false")
-    public void togglecollisions(CommandSender sender, boolean value) {
-        if (!(sender instanceof Player) || !((Player) sender).isOp()) {
-            sender.sendMessage("§cYou don't have permission to use this command.");
-            return;
-        }
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            player.setCollidable(value);
-        }
-
-        String status = value ? "enabled" : "disabled";
-        sender.sendMessage("§aPlayer collision has been " + status + " for all players.");
-    }
+//    @Subcommand("togglecollisions")
+//    @CommandCompletion("true|false")
+//    public void togglecollisions(CommandSender sender, boolean value) {
+//        if (!(sender instanceof Player) || !((Player) sender).isOp()) {
+//            sender.sendMessage("§cYou don't have permission to use this command.");
+//            return;
+//        }
+//
+//        for (Player player : Bukkit.getOnlinePlayers()) {
+//            player.setCollidable(value);
+//        }
+//
+//        String status = value ? "enabled" : "disabled";
+//        sender.sendMessage("§aPlayer collision has been " + status + " for all players.");
+//    }
 }
