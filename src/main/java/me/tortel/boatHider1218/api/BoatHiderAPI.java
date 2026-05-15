@@ -5,6 +5,7 @@ import me.tortel.boatHider1218.nms.NMSUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Boat;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class BoatHiderAPI {
@@ -31,6 +32,14 @@ public class BoatHiderAPI {
     public void forceAllIntoBoat() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             forceIntoBoat(p);
+        }
+    }
+
+    public void removeAllCollisionlessBoats() {
+        for (Entity entity : Bukkit.getWorlds().stream().flatMap(world -> world.getEntities().stream()).toList()) {
+            if (entity instanceof Boat boat && nms.isCollisionless(boat)) {
+                boat.remove();
+            }
         }
     }
 
