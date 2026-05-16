@@ -15,9 +15,9 @@ repositories {
         name = "papermc-repo"
         url = "https://repo.papermc.io/repository/maven-public/"
     }
-    maven {
-        url = uri('https://repo.aikar.co/content/groups/aikar/')
-    }
+//    maven {
+//        url = uri('https://repo.aikar.co/content/groups/aikar/')
+//    }
     maven {
         url = uri('https://oss.sonatype.org/content/groups/public/')
     }
@@ -26,9 +26,10 @@ repositories {
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
     compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
 
-    implementation "co.aikar:acf-paper:0.5.1-SNAPSHOT"
+    //implementation "co.aikar:acf-paper:0.5.1-SNAPSHOT"
 
     paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT")
 }

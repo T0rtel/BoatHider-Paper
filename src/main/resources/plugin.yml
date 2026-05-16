@@ -2,3 +2,20 @@ name: BoatHider1-21-8
 version: '1.0-SNAPSHOT'
 main: me.tortel.boatHider1218.BoatHiderMain
 api-version: '1.21'
+
+commands:
+  dev:
+    description: Developer commands for boat management
+    usage: /dev <subcommand> [args]
+    aliases: [boatdev]
+    permission: boathider.dev
+    subcommands:
+      forceinboat: Force a player into a boat
+      hideboats: Toggle boat hiding
+      spawnboat: Spawn a boat at a location
+      togglecollisions: Toggle player collisions
+
+permissions:
+  boathider.dev:
+    description: Allows access to all dev commands
+    default: op
