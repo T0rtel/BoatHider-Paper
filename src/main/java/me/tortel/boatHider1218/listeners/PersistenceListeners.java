@@ -46,7 +46,7 @@ public class PersistenceListeners implements Listener {
 
         Boat boat = (Boat) vehicle;
         if (!nms.isCollisionless(boat)) {
-            System.out.println("a boat isn't collisionless :(");
+            //System.out.println("a boat isn't collisionless :(");
             new BukkitRunnable() {
                 @Override
                 public void run() {

@@ -16,22 +16,24 @@ public class BoatHiderAPI {
         this.nms = new NMSUtils();
     }
 
-    public void forceIntoBoat(Player target) {
+    public void forceIntoBoat(Player target, boolean doHideBoat) {
         Location location = target.getLocation();
         location.setYaw(target.getEyeLocation().getYaw());
         Boat boat = nms.spawnBoat(null, location);
         if (boat != null) {
             boat.addPassenger(target);
         }
+        if (doHideBoat)
+            hideBoats(true);
     }
 
     public void hideBoats(Boolean value) {
         BoatListeners.setHidingBoats(value);
     }
 
-    public void forceAllIntoBoat() {
+    public void forceAllIntoBoat(boolean doHideBoat) {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            forceIntoBoat(p);
+            forceIntoBoat(p, doHideBoat);
         }
     }
 

@@ -43,6 +43,8 @@ public class NMSUtils {
         System.out.println("spawning a new collisionless boat");
 
         org.bukkit.entity.Entity entity = level.getWorld().getEntity(boat.getUUID());
+        assert entity != null;
+        entity.setPersistent(true);
         return entity instanceof org.bukkit.entity.Boat ? (org.bukkit.entity.Boat) entity : null;
     }
 
