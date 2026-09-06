@@ -1,8 +1,8 @@
 plugins {
     id 'java'
-    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("xyz.jpenilla.run-paper") version "3.0.2"
     id 'java-library'
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.22"
     id("com.gradleup.shadow") version "8.3.6"
 }
 
@@ -24,14 +24,14 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.30'
-    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    compileOnly 'org.projectlombok:lombok:1.18.48'
+    annotationProcessor 'org.projectlombok:lombok:1.18.48'
 
-    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
+    //compileOnly("io.papermc.paper:paper-api:26.2.build.+")
 
     //implementation "co.aikar:acf-paper:0.5.1-SNAPSHOT"
 
-    paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("26.2.build.+")
 }
 
 tasks {
@@ -39,7 +39,7 @@ tasks {
         // Configure the Minecraft version for our task.
         // This is the only required configuration besides applying the plugin.
         // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.21.8")
+        minecraftVersion("26.2")
     }
 
     // ADD THIS — makes shadowJar the default build output
@@ -47,12 +47,21 @@ tasks {
         dependsOn(reobfJar)
     }
 
+    shadowJar {
+        manifest {
+            attributes["paperweight-mappings-namespace"] = "mojang"
+        }
+    }
+
+//    reobfJar {
+//        inputJar.set(shadowJar.archiveFile)
+//    }
     reobfJar {
-        inputJar.set(shadowJar.archiveFile)
+        enabled = false
     }
 }
 
-def targetJavaVersion = 21
+def targetJavaVersion = 25
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     if (JavaVersion.current() < javaVersion) {

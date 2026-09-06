@@ -1,12 +1,15 @@
 package me.tortel.boatHider1218.nms;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.item.Items;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftBoat;
+import net.minecraft.core.registries.BuiltInRegistries;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 
 public class NMSUtils {
 
@@ -27,7 +30,7 @@ public class NMSUtils {
             location = locationn;
             level = ((CraftWorld) location.getWorld()).getHandle();
             boat = new CollisionlessBoat(
-                    EntityType.ACACIA_BOAT,
+                    bukkitToNMSEntityType(org.bukkit.entity.EntityType.ACACIA_BOAT),
                     level,
                     () -> Items.JUNGLE_BOAT
             );
@@ -54,16 +57,24 @@ public class NMSUtils {
     }
 
     public static EntityType<? extends Boat> bukkitToNMSEntityType(org.bukkit.entity.EntityType bukkitType) {
-        switch (bukkitType) {
-            case OAK_BOAT:       return EntityType.OAK_BOAT;
-            case SPRUCE_BOAT:    return EntityType.SPRUCE_BOAT;
-            case BIRCH_BOAT:     return EntityType.BIRCH_BOAT;
-            case JUNGLE_BOAT:    return EntityType.JUNGLE_BOAT;
-            case ACACIA_BOAT:    return EntityType.ACACIA_BOAT;
-            case DARK_OAK_BOAT:  return EntityType.DARK_OAK_BOAT;
-            case MANGROVE_BOAT:  return EntityType.MANGROVE_BOAT;
-            default:             return null;
-        }
+        Identifier key = CraftNamespacedKey.toMinecraft(bukkitType.getKey());
+        @SuppressWarnings("unchecked")
+        EntityType<? extends Boat> nmsType =
+                (EntityType<? extends Boat>) BuiltInRegistries.ENTITY_TYPE.getValue(key);
+        return nmsType;
     }
+
+//    public static EntityType<? extends Boat> bukkitToNMSEntityType(org.bukkit.entity.EntityType bukkitType) {
+//        switch (bukkitType) {
+//            case OAK_BOAT:       return EntityType.OAK_BOAT;
+//            case SPRUCE_BOAT:    return EntityType.SPRUCE_BOAT;
+//            case BIRCH_BOAT:     return EntityType.BIRCH_BOAT;
+//            case JUNGLE_BOAT:    return EntityType.JUNGLE_BOAT;
+//            case ACACIA_BOAT:    return EntityType.ACACIA_BOAT;
+//            case DARK_OAK_BOAT:  return EntityType.DARK_OAK_BOAT;
+//            case MANGROVE_BOAT:  return EntityType.MANGROVE_BOAT;
+//            default:             return null;
+//        }
+//    }
 
 }
