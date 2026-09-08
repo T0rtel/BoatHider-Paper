@@ -20,6 +20,8 @@ Whenever a normal boat spawns in the world (player-placed, from a dispenser, etc
 
 On top of that, there's an optional **hiding mode**: when enabled, players riding in boats (and the boats themselves) become invisible to everyone else except their own passengers. This is handled by tracking vehicle enter/exit events and selectively showing/hiding entities per-player using Bukkit's `showEntity`/`hideEntity` API.
 
+This plugin requires you to hide the boats in order that there is no collision.
+
 ## Commands
 
 All commands are under `/dev`, and require the sender to be OP.
