@@ -24,14 +24,12 @@ This plugin requires you to hide the boats in order that there is no collision.
 
 ## Commands
 
-All commands are under `/dev`, and require the sender to be OP.
+All under /dev, OP-only:
 
-| Command | Description |
-|---|---|
-| `/dev spawnboat [world] [x] [y] [z]` | Spawns a collisionless boat at the given coordinates (or your current location if no coordinates are given). |
-| `/dev forceinboat <player|@a>` | Spawns a collisionless boat under the target player(s) and puts them in it. `@a` applies it to everyone online. |
-| `/dev hideboats <true|false>` | Toggles hiding mode — when `true`, boats and their riders become invisible to everyone but their own passengers. |
-| `/dev togglecollisions <true|false>` | Enables or disables player-to-player collision for all online players. |
+/dev spawnboat [world] [x] [y] [z] — spawn a collisionless boat
+/dev forceinboat <player|@a> — spawn a boat under a player and put them in it
+/dev hideboats <true|false> — toggle hiding mode
+/dev togglecollisions <true|false> — toggle player collision globally
 
 All commands tab-complete their arguments (player names, world names, `true`/`false`, and current coordinates for `spawnboat`).
 
